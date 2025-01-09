@@ -10,7 +10,15 @@ const array = [
   },
 ];
 
-const obj = array.reduce((accum, item) => {
+type User = {
+  name: string;
+};
+
+type NamesDictionary = {
+  [K: string]: User;
+};
+
+const obj = array.reduce<NamesDictionary>((accum, item) => {
   accum[item.name] = item;
   return accum;
 }, {});

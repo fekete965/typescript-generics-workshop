@@ -1,10 +1,22 @@
 import { it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
+type UseDataResult<T> = {
+  getData: () => T;
+};
+
 // You'll need to use function overloads to figure this out!
-function useData<T>(params: { fetchData: () => Promise<T>; initialData?: T }): {
-  getData: () => T | undefined;
-} {
+function useData<T>(params: {
+  fetchData: () => Promise<T>;
+  initialData: T;
+}): UseDataResult<T>;
+function useData<T>(params: {
+  fetchData: () => Promise<T>;
+}): UseDataResult<undefined | T>;
+function useData<T>(params: {
+  fetchData: () => Promise<T>;
+  initialData?: T;
+}): UseDataResult<undefined | T> | UseDataResult<T> {
   let data = params.initialData;
 
   params.fetchData().then((d) => {

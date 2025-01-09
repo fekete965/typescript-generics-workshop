@@ -1,7 +1,18 @@
 import { expect, it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
-const makeInfiniteScroll = (params: unknown) => {
+type ParamsWithKey<TData> = {
+  fetchRows: () => Promise<TData[]> | TData[];
+  initialRows?: TData[];
+  key: keyof TData;
+};
+
+type Result<T> = {
+  scroll: () => Promise<void>;
+  getRows: () => T[];
+};
+
+function makeInfiniteScroll<T>(params: ParamsWithKey<T>): Result<T> {
   const data = params.initialRows || [];
 
   const scroll = async () => {
@@ -13,7 +24,7 @@ const makeInfiniteScroll = (params: unknown) => {
     scroll,
     getRows: () => data,
   };
-};
+}
 
 it("Should fetch more data when scrolling", async () => {
   const table = makeInfiniteScroll({
@@ -66,6 +77,6 @@ it("Should allow you to pass initialRows", () => {
   ]);
 
   type tests = [
-    Expect<Equal<typeof rows, Array<{ id: number; name: string }>>>
+    Expect<Equal<typeof rows, Array<{ id: number; name: string }>>>,
   ];
 });

@@ -1,12 +1,13 @@
 import { Equal, Expect } from "../helpers/type-utils";
 
 export const makeSelectors = <
-  TSource,
-  TSelectors extends Record<string, (source: TSource) => any>,
->(
-  selectors: TSelectors,
-) => {
-  return selectors;
+  TSource = "makeSelectors expects to be passed a type argument",
+>() => {
+  return <TSelectors extends Record<string, (source: TSource) => any>>(
+    selectors: TSelectors
+  ) => {
+    return selectors;
+  };
 };
 
 interface Source {
@@ -27,7 +28,7 @@ interface Source {
  *
  * makeSelectors<Source>()({ ...selectorsGoHere })
  */
-const selectors = makeSelectors<Source>({
+const selectors = makeSelectors<Source>()({
   getFullName: (source) =>
     `${source.firstName} ${source.middleName} ${source.lastName}`,
   getFirstAndLastName: (source) => `${source.firstName} ${source.lastName}`,

@@ -1,9 +1,34 @@
 import { expect, it, describe } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
-export const getHomePageFeatureFlags = (
-  config: unknown,
-  override: (flags: unknown) => unknown
+// Little bit messier solution
+export const getHomePageFeatureFlags1 = <
+  TConfig extends {
+    rawConfig: {
+      featureFlags: {
+        homePage: any;
+      };
+    };
+  },
+>(
+  config: TConfig,
+  override: (
+    flags: TConfig["rawConfig"]["featureFlags"]["homePage"]
+  ) => TConfig["rawConfig"]["featureFlags"]["homePage"]
+) => {
+  return override(config.rawConfig.featureFlags.homePage);
+};
+
+// Cleaner solution
+export const getHomePageFeatureFlags = <HomePageFlags>(
+  config: {
+    rawConfig: {
+      featureFlags: {
+        homePage: HomePageFlags;
+      };
+    };
+  },
+  override: (flags: HomePageFlags) => HomePageFlags
 ) => {
   return override(config.rawConfig.featureFlags.homePage);
 };
@@ -38,7 +63,7 @@ describe("getHomePageFeatureFlags", () => {
     });
 
     type tests = [
-      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>
+      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>,
     ];
   });
 
@@ -54,7 +79,7 @@ describe("getHomePageFeatureFlags", () => {
     });
 
     type tests = [
-      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>
+      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>,
     ];
   });
 });
